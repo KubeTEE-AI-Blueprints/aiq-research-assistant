@@ -1,6 +1,6 @@
 general:
   use_uvloop: true
-  front_end:
+  frontend:
     _type: aira_frontend
     endpoints:
       - path: /generate_query

@@ -247,3 +247,6 @@ share/python-wheels/
 cover/
 
 # Workbench Project Layout
+
+# KubeTEE AI
+*staging.yaml

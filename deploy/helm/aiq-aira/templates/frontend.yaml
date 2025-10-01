@@ -35,4 +35,8 @@ spec:
             {{- end }}
             - name: INFERENCE_ORIGIN
               value: http://{{ .Release.Name }}-aira-backend.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: PORT
+              value: "{{ .Values.frontend.service.port }}"
 {{- end }}
