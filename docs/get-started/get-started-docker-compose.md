@@ -163,6 +163,25 @@ rag-server                       Up 4 minutes
 
 Next deploy the instruct model. *This step can take up to 45 minutes*.
 
+#### Model profile selection
+
+By default, the deployment of the instruct LLM automatically selects the most suitable profile from the list of compatible profiles based on the detected hardware. If you encounter issues with the selected profile or prefer to use a different compatible profile, you can explicitly select the profile by setting `NIM_MODEL_PROFILE` environment variable. 
+
+You can list available profiles by running the NIM container directly:
+```bash
+USERID=$(id -u) docker run --rm --gpus all \
+  nvcr.io/nim/meta/llama-3.3-70b-instruct:1.13.1 \
+  list-model-profiles
+```
+
+It is preferrable to select `tensorrt_llm-*` profiles for best performance. Here is an example of selecting one of these profiles for two H100 GPUs:
+
+```bash
+export NIM_MODEL_PROFILE="tensorrt_llm-h100-fp8-tp2-pp1-throughput-2330:10de-82333b6cf4e6ddb46f05152040efbb27a645725012d327230367b0c941c58954-4"
+```
+
+More information about model profile selection can be found [here](https://docs.nvidia.com/nim/large-language-models/latest/profiles.html#profile-selection) in the NVIDIA NIM for Large Language Models (LLMs) documentation.
+
 #### Deploy the Model
 
 ```bash
@@ -322,49 +341,7 @@ docker compose -f deploy/compose/docker-compose.yaml --profile aira up -d
 
 ## Troubleshooting
 
-### Model Download Issues
-
-#### Known Issue: Model Download Error (NIM 1.12.0)
-
-**Issue**: When deploying `llama-3.3-70b-instruct` with NIM version 1.12.0, you may encounter download errors with "Too many open files" messages. This is a known issue documented in the [NVIDIA NIM 1.12.0 Release Notes](https://docs.nvidia.com/nim/large-language-models/1.12.0/release-notes.html).
-
-**Workarounds**:
-1. **Increase file descriptor limits**: Add `--ulimit nofile=65536:65536` to your Docker run command
-2. **Retry the deployment**: Sometimes the download succeeds on subsequent attempts  
-3. **Pin to an earlier version**: As a last resort, use a specific working version from the [NGC catalog](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-70b-instruct/tags?version=latest):
-   ```yaml
-   # In docker-compose.yaml
-   image: nvcr.io/nim/meta/llama-3.3-70b-instruct:1.0.3
-   ```
-
-### Checking Model Profiles
-
-You can check available profiles for your system to ensure compatibility and optimal performance:
-
-#### Llama 3.3 70B Instruct Profiles
-
-```bash
-# List available profiles for Llama 3.3 70B Instruct
-docker run --rm --gpus=all -e NGC_API_KEY=$NGC_API_KEY \
-  nvcr.io/nim/meta/llama-3.3-70b-instruct:latest \
-  list-model-profiles
-```
-
-#### Nemotron Model Profiles
-
-For the Nemotron model used by RAG (running in the `nim-llm-ms` container), you can check its profiles after the RAG deployment is complete:
-
-```bash
-# Check profiles for the already-running Nemotron model in nim-llm-ms container
-docker exec nim-llm-ms list-model-profiles
-```
-
-#### Hardware Requirements Reference
-
-- **Llama 3.3 70B Instruct**: See detailed hardware requirements and optimization profiles in the [NVIDIA NIM Supported Models documentation](https://docs.nvidia.com/nim/large-language-models/1.12.0/supported-models.html#llama-33-70b-instruct)
-- **Llama 3.3 Nemotron Super 49B**: For supported hardware configurations, see the [Nemotron documentation](https://docs.nvidia.com/nim/large-language-models/latest/supported-models.html#llama-3-3-nemotron-super-49b-v1-5)
-
-**Note**: Profiles help ensure optimal performance and resource utilization. The system will automatically select the most appropriate profile based on your hardware configuration.
+If you encounter any issues during deployment or operation, please refer to the comprehensive [Troubleshooting Guide](../troubleshooting.md) for detailed solutions and debugging steps.
 
 ## Optional: Tracing Using Phoenix
 
