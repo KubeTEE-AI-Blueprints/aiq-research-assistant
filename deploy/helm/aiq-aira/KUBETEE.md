@@ -22,5 +22,5 @@
 ## Deployment Helm Chart
 
 ```sh
-helm upgrade --install aiq ./aiq-research-assistant/deploy/helm/aiq-aira -n aiq --create-namespace -f ./aiq-research-assistant/deploy/helm/aiq-aira/values-staging.yaml
+helm upgrade --install aiq deploy/helm/aiq-aira -n aiq --create-namespace -f deploy/helm/aiq-aira/values-staging.yaml
 ```
