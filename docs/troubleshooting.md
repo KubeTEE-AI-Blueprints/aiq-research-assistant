@@ -35,6 +35,12 @@ To identify errors with collections or document upload, follow the steps below.
 
 **Note: During bulk file upload using the file upload utility, if you see 429 errors in the logs for the compose-nv-ingest-ms-runtime-1 service log it suggests a temporary error. You can re-run the file upload command multiple times, each time the process will pick up where it left off, uploading any documents that failed due to this error.**
 
+### Known Issue: Large Bulk Ingestion Failure using MIG 
+
+For MIG support, currently the ingestion profile has been scaled down while deploying the chart with MIG slicing. This affects the ingestion performance during bulk ingestion, specifically large bulk ingestion jobs might fail.
+
+For additional known issues related to the RAG Blueprint, see the [CHANGELOG](https://github.com/NVIDIA-AI-Blueprints/rag/blob/main/CHANGELOG.md#all-known-issues).
+
 ## Errors with Report Plan Generation 
 
 To identify errors with Rreport planning generation, follow the steps below.
@@ -71,10 +77,10 @@ Ensure you have provided a valid Taviliy API key, and have set the `TAVILY_API_K
 **Workarounds**:
 1. **Increase file descriptor limits**: Add `--ulimit nofile=65536:65536` to your Docker run command
 2. **Retry the deployment**: Sometimes the download succeeds on subsequent attempts  
-3. **Pin to an earlier version**: As a last resort, use a specific working version from the [NGC catalog](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama-3.3-70b-instruct?version=latest):
+3. **Pin to an earlier version**: As a last resort, use a specific working version from the [NGC catalog](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama-3.3-70b-instruct?version=1.13.1):
    ```yaml
    # In docker-compose.yaml
-   image: nvcr.io/nim/meta/llama-3.3-70b-instruct:latest
+   image: nvcr.io/nim/meta/llama-3.3-70b-instruct:1.13.1
    ```
 
 ## Checking Model Profiles
@@ -86,7 +92,7 @@ You can check available profiles for your system to ensure compatibility and opt
 ```bash
 # List available profiles for Llama 3.3 70B Instruct
 docker run --rm --gpus=all -e NGC_API_KEY=$NGC_API_KEY \
-  nvcr.io/nim/meta/llama-3.3-70b-instruct:latest \
+  nvcr.io/nim/meta/llama-3.3-70b-instruct:1.13.1 \
   list-model-profiles
 ```
 

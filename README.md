@@ -104,14 +104,14 @@ Instruct Model for Report Generation | `llama-3.3-70b-instruct` | 2 x H100 80GB*
 --- | -- | -- 
 **Total** | Entire AI-Q Research Blueprint | 4 x H100 80GB* <br /> 7 x A100 80GB <br /> 5 x B200
 
-  *This recommendation is based off of the configuration used to test the blueprint. For alternative configurations, view the [RAG blueprint documentation](https://github.com/NVIDIA-AI-Blueprints/rag?tab=readme-ov-file#minimum-system-requirements).
+  *This recommendation is based off of the configuration used to test the blueprint. For alternative configurations, view the [RAG blueprint documentation](https://github.com/NVIDIA-AI-Blueprints/rag/blob/main/docs/support-matrix.md).
 
 #### Helm
 
 | Option | RAG Deployment | AIRA Deployment | Total Hardware Requirement |
 |--------|----------------|-----------------|---------------------------|
 | Single Node - MIG Sharing | [Use MIG sharing](https://github.com/NVIDIA-AI-Blueprints/rag/blob/main/docs/mig-deployment.md) | [Default Deployment](#deploy-the-ai-q-research-assistant) | 4xH100 80GB for RAG<br/>2xH100 80GB for AIRA<br/>---<br/>6xH100 80GB total |
-| Multi Node | [Default Deployment](https://github.com/NVIDIA-AI-Blueprints/rag/blob/main/docs/quickstart.md#deploy-with-helm-chart) | [Default Deployment](#deploy-the-ai-q-research-assistant) | 8xH100 80GB for RAG<br/>2xH100 80GB for AIRA<br/>---<br/>10xH100 80GB total |
+| Multi Node | [Default Deployment](https://github.com/NVIDIA-AI-Blueprints/rag/blob/main/docs/deploy-helm.md) | [Default Deployment](#deploy-the-ai-q-research-assistant) | 8xH100 80GB for RAG<br/>2xH100 80GB for AIRA<br/>---<br/>10xH100 80GB total |
 
 
 #### Running with hosted NVIDIA NIM Microservices
@@ -141,6 +141,7 @@ ADDITIONAL INFORMATION: For NVIDIA Retrieval QA Llama 3.2 1B Reranking v2 model,
 
 ## Security Considerations
 
+- **Prompt Injection Protection**: The AI-Q Research Assistant includes built-in security measures to prevent prompt injection attacks, including instruction override attempts, system prompt injection, credential extraction, command execution, SQL injection, XSS attacks, and code execution attempts. See the [Security Testing Guide](docs/security-testing.md) for details on testing these protections.
 - The AI-Q Research Assistant Blueprint doesn't generate any code that may require sandboxing.
 - The AI-Q Research Assistant Blueprint is shared as a reference and is provided "as is". The security in the production environment is the responsibility of the end users deploying it. When deploying in a production environment, please have security experts review any potential risks and threats; define the trust boundaries, implement logging and monitoring capabilities, secure the communication channels, integrate AuthN & AuthZ with appropriate access controls, keep the deployment up to date, ensure the containers/source code are secure and free of known vulnerabilities.
 - A frontend that handles AuthN & AuthZ should be in place as missing AuthN & AuthZ could provide ungated access to customer models if directly exposed to e.g. the internet, resulting in either cost to the customer, resource exhaustion, or denial of service.
