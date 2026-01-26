@@ -10,7 +10,10 @@
 
 - [**NVIDIA NIM Microservices**](https://developer.nvidia.com/nim?sortBy=developer_learning_library%2Fsort%2Ffeatured_in.nim%3Adesc%2Ctitle%3Aasc&hitsPerPage=12)
 
+## Optional Autonomous Fine-Tuneing Service
+
 - [**Data Flywheel**](https://github.com/KubeTEE-AI-Blueprints/data-flywheel) production-grade autonomous service that uses the NeMo Microservices to continuously discover and promote more efficient models.
+  - Require a dedicated GPU H200 for infenrencing
 
 ## User provided APIKEYs
 
