@@ -19,8 +19,38 @@
 
 ![Architecture Diagram](https://assets.ngc.nvidia.com/products/api-catalog/aiq/diagram.jpg?)
 
-## Deployment Helm Chart
+## Deployment
+
+### Helm Chart Installation
 
 ```sh
-helm upgrade --install aiq deploy/helm/aiq-aira -n aiq -f deploy/helm/aiq-aira/values-staging.yaml
+helm upgrade --install aiq deploy/helm/aiq-aira -n <namespace> --create-namespace \
+  -f deploy/helm/aiq-aira/values-staging.yaml
+```
+
+### Dynamic Ingress
+
+The ingress hostname is automatically generated based on the deployment namespace:
+
+| Namespace | URL | TLS Secret |
+|-----------|-----|------------|
+| `aiq` | https://aiq-staging.kubetee.ai | `aiq-tls` |
+| `research` | https://research-staging.kubetee.ai | `research-tls` |
+| `demo` | https://demo-staging.kubetee.ai | `demo-tls` |
+
+**Pattern:** `{namespace}-staging.kubetee.ai`
+
+### Requirements
+
+- **Ingress Controller:** Traefik (k3s default)
+- **TLS:** cert-manager with `letsencrypt-prod` ClusterIssuer
+- **Secrets:** `ngc-secret`, `ngc-api`, `tavily-secret` pre-created in namespace
+
+### Override Hostname (optional)
+
+```sh
+helm upgrade --install aiq deploy/helm/aiq-aira -n aiq \
+  -f deploy/helm/aiq-aira/values-staging.yaml \
+  --set frontend.ingress.host=custom.kubetee.ai \
+  --set frontend.ingress.tls.secretName=custom-tls
 ```
