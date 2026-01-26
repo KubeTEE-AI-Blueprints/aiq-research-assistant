@@ -80,10 +80,13 @@ frontend:
     pullPolicy: Always
   replicaCount: 1
   # Ingress with Let's Encrypt SSL
+  # Host is dynamically generated: {namespace}{domainSuffix}
+  # e.g., deployed to "aiq" namespace -> aiq-staging.kubetee.ai
   ingress:
     enabled: true
     className: traefik
-    host: aiq-staging.kubetee.ai
+    domainSuffix: "-staging.kubetee.ai"  # Results in: {namespace}-staging.kubetee.ai
+    # host: ""  # Optional: override to set explicit hostname
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
@@ -91,8 +94,7 @@ frontend:
     paths:
       - path: /
         pathType: Prefix
-    tls:
-      secretName: aiq-staging-tls
+    tls: {}  # secretName auto-generated as {namespace}-tls
 
 # Phoenix tracing
 phoenix:
