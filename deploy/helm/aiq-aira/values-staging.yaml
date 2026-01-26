@@ -1,0 +1,96 @@
+# ------------------------------------------------------------
+# KubeTEE Staging Values for AIQ AIRA
+# ------------------------------------------------------------
+
+replicaCount: 1
+
+imagePullSecret:
+  name: "ngc-secret"
+  registry: "nvcr.io"
+  username: "$oauthtoken"
+  password: ""  # Set via --set or external secret
+  create: false  # Use existing secret in staging
+
+ngcApiSecret:
+  name: "ngc-api"
+  password: ""  # Set via --set or external secret
+  create: false  # Use existing secret in staging
+
+tavilyApiSecret:
+  name: "tavily-secret"
+  create: false  # Use existing secret in staging
+  password: ""
+
+# Image configuration
+image:
+  baserepo: nvcr.io
+  repository: nvcr.io/nvidia/blueprint/aira-backend
+  tag: v1.2.0
+  pullPolicy: Always
+
+# Service configuration
+service:
+  port: 3838
+
+# Backend environment variables for KubeTEE staging
+backendEnvVars:
+  INSTRUCT_MODEL_NAME: "meta/llama-3.3-70b-instruct"
+  INSTRUCT_MODEL_TEMP: "0.0"
+  NEMOTRON_MAX_TOKENS: "5000"
+  INSTRUCT_MAX_TOKENS: "20000"
+  INSTRUCT_BASE_URL: "http://instruct-llm.nemo.svc.cluster.local:8000"
+  INSTRUCT_API_KEY: "not-needed"
+  NEMOTRON_MODEL_NAME: "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+  NEMOTRON_MODEL_TEMP: "0.5"
+  # KubeTEE shared NIM in nemo namespace
+  NEMOTRON_BASE_URL: "http://nim-llm.nemo.svc.cluster.local:8000"
+  AIRA_APPLY_GUARDRAIL: "false"
+  # KubeTEE shared RAG services
+  RAG_SERVER_URL: "http://rag-server:8081"
+  RAG_INGEST_URL: "http://ingestor-server:8082"
+  
+# NIM LLM - use KubeTEE shared NIM in nemo namespace
+nim-llm:
+  enabled: false
+  service:
+    name: "instruct-llm"
+  image:
+      repository: nvcr.io/nim/meta/llama-3.3-70b-instruct
+      pullPolicy: IfNotPresent
+      tag: "1.14.0"
+  resources:
+    limits:
+      nvidia.com/gpu: 2
+    requests:
+      nvidia.com/gpu: 2
+  model:
+    ngcAPIKey: ""
+    name: "meta/llama-3.3-70b-instruct"
+
+# Frontend configuration
+frontend:
+  enabled: true
+  service:
+    type: ClusterIP  # Use Ingress in staging
+    port: 3000
+    targetPort: 3000
+  image:
+    repository: nvcr.io/nvidia/blueprint/aira-frontend
+    tag: v1.2.0
+    pullPolicy: Always
+  replicaCount: 1
+
+# Phoenix tracing
+phoenix:
+  enabled: true
+  image:
+    repository: arizephoenix/phoenix
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
