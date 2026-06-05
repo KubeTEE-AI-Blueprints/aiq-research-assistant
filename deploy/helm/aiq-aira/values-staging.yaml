@@ -84,7 +84,8 @@ frontend:
   # e.g., deployed to "aiq" namespace -> aiq-staging.kubetee.ai
   ingress:
     enabled: true
-    className: traefik
+    # Empty = use cluster default IngressClass (Traefik when installed as default)
+    className: ""
     domainSuffix: "-staging.kubetee.ai"  # Results in: {namespace}-staging.kubetee.ai
     # host: ""  # Optional: override to set explicit hostname
     annotations:
